@@ -26,13 +26,19 @@ int crear_conexion(char *ip, char* puerto)
 	hints.ai_socktype = SOCK_STREAM;
 	hints.ai_flags = AI_PASSIVE;
 
-	getaddrinfo(ip, puerto, &hints, &server_info);
+	getaddrinfo(ip, puerto, &hints, &server_info);//buscar info del sercidor en arch config
 
-	// Ahora vamos a crear el socket.
-	int socket_cliente = 0;
+	// Ahora vamos a CREAR el socket.
+	int socket_cliente = socket(server_info->ai_family, server_info->ai_socktype, server_info->ai_protocol);
 
-	// Ahora que tenemos el socket, vamos a conectarlo
+	// Ahora que tenemos el socket, vamos a CONECTARSE CON SERVIDOR --> CONNECT
+	int conexion_con_servidor = connect(socket_cliente, server_info->ai_addr, server_info->ai_addrlen);
 
+	if ( conexion_con_servidor == -1) {
+        printf("Error al conectar!");
+        freeaddrinfo(server_info);
+        return -1;
+    }
 
 	freeaddrinfo(server_info);
 
